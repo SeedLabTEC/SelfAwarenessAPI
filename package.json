@@ -1,0 +1,23 @@
+{
+  "name": "MicroServiceUno",
+  "version": "1.0.0",
+  "description": "Servicio express de logica compleja para consultas en BD",
+  "main": "node server.js",
+  "scripts": {
+    "test": "makeTest"
+  },
+  "keywords": [
+    "MicroService",
+    "RESTFUL",
+    "API"
+  ],
+  "author": "Rodolfo Solano Asenjo",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "extend": "^3.0.2"
+  }
+}

@@ -1,0 +1,13 @@
+{
+    "HttpPort":3000,
+    "HttpsPort":443,
+    "Cors":"*",
+    "isSecure":true,
+    "Logs":{
+        "Errors":false,
+        "Actions":false
+    },
+    "Errors":{
+        "GenericCatchException":0
+    }
+}
