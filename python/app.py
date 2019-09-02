@@ -1,12 +1,20 @@
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
+import os
 import flask
+from flask import  request, abort, jsonify, send_from_directory
+import json
+from process import *
+import time
+from flask_cors import CORS
 
 app = flask.Flask(__name__)
+CORS(app)
 
 #Fetch the service account key JSON file contents
 cred = credentials.Certificate('adminsdk.json')
+UPLOAD_DIRECTORY = "files"
 
 firebase_admin.initialize_app(options={
     'databaseURL': 'https://self-awareness-70035.firebaseio.com/'
@@ -42,3 +50,31 @@ def EnsureObject(id):
     if not test:
         flask.abort(404)
     return test
+
+@app.route('/Memory/<id>')
+def readMemory(id):
+    tem = process()
+    tem.id = id
+    tem.memory = 200
+    print("test: "+tem.id)
+    tem = json.dumps(tem.__dict__)
+    return tem
+
+@app.route("/app/<filename>", methods=["POST"])
+def post_file(filename):
+    """Upload a file."""
+
+    if "/" in filename:
+        # Return 400 BAD REQUEST
+        abort(400, "no subdirectories directories allowed")
+
+    with open(os.path.join(UPLOAD_DIRECTORY, filename), "wb") as fp:
+        fp.write(request.data)
+    setPermissions(filename)
+    # Return 201 CREATED
+    return "", 201
+
+@app.route("/runapp/<filename>", methods=["POST"])
+def runApp(filename):
+    runProcess(filename)
+    return "", 201
