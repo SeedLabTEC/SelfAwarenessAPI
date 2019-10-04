@@ -1,3 +1,4 @@
+import sys
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
@@ -5,9 +6,12 @@ import os
 import flask
 from flask import  request, abort, jsonify, send_from_directory
 import json
-from process import *
+from tools import top
+from tools import process
 import time
 from flask_cors import CORS
+
+
 
 app = flask.Flask(__name__)
 CORS(app)
@@ -53,7 +57,7 @@ def EnsureObject(id):
 
 @app.route('/Memory/<id>')
 def readMemory(id):
-    tem = process()
+    tem = process(id)
     tem.id = id
     tem.memory = 200
     print("test: "+tem.id)
@@ -70,11 +74,23 @@ def post_file(filename):
 
     with open(os.path.join(UPLOAD_DIRECTORY, filename), "wb") as fp:
         fp.write(request.data)
-    setPermissions(filename)
+    #setPermissions(filename)
     # Return 201 CREATED
     return "", 201
 
 @app.route("/runapp/<filename>", methods=["POST"])
 def runApp(filename):
-    runProcess(filename)
-    return "", 201
+    app = process.process(filename)
+    app.start()
+    time.sleep(0.2)
+    app.analizeCpu()
+    return {'pid':app.appId,'ppid':os.getpid()}, 201
+
+@app.route("/top", methods=["GET"])
+def getTop():
+    path="tools/scripts/getTop.sh"
+    toppath = "top.txt"
+    top.runTop(path)
+    result = top.fileRefactor(toppath)
+    top.deleteFile(toppath)
+    return {'result':result}, 201

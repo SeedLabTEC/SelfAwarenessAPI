@@ -4,5 +4,11 @@
 #include <unistd.h>
 
 int main() {
-    printf("hola mundo \n");
+    for (size_t i = 0; i < 100000; i++)
+    {
+        sleep(10);
+        //printf("hola mundo \n");
+    }
+    
+    
 }
