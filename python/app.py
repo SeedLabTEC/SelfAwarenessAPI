@@ -10,8 +10,7 @@ from tools import top
 #from tools import process
 import time
 from flask_cors import CORS
-import sammonitor as samm
-from monitor import Process
+from includes import monitor
 
 
 app = flask.Flask(__name__)
@@ -95,8 +94,17 @@ def getTop():
     return {'result':result}, 201
 
 
-@app.route("/monitor/<int:pid>", methods=["POST"])
-def monitor(pid):
-    mon = Process(pid)
-    mon.start()
+@app.route("/monitorApp/<int:pid>", methods=["POST"])
+def monitorApp(pid):
+    monitor.startProcess(pid)
     return {'result':1}, 201
+
+@app.route("/getPidData/<int:pid>", methods=["GET"])
+def getPidData(pid):
+    result = monitor.getPidInfo(pid)
+    return result, 201
+
+@app.route("/getPidHistory/<int:pid>", methods=["GET"])
+def getPidHistory(pid):
+    result = monitor.getPidHistoryInfo(pid)
+    return result, 201
