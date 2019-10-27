@@ -2,7 +2,7 @@
     ```
     export GOOGLE_APPLICATION_CREDENTIALS=adminsdk.json
     export FLASK_APP=app.py
-    flask run --host=0.0.0.0
+    flask run --host=0.0.0.0 --port=8080
     ```
 
 

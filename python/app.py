@@ -11,7 +11,7 @@ from tools import top
 import time
 from flask_cors import CORS
 import sammonitor as samm
-
+from monitor import Process
 
 
 app = flask.Flask(__name__)
@@ -67,8 +67,6 @@ def readMemory(id):
 
 @app.route("/app/<filename>", methods=["POST"])
 def post_file(filename):
-    """Upload a file."""
-
     if "/" in filename:
         # Return 400 BAD REQUEST
         abort(400, "no subdirectories directories allowed")
@@ -97,7 +95,8 @@ def getTop():
     return {'result':result}, 201
 
 
-@app.route("/monitor/<pid>", methods=["POST"])
-def getTop(pid):
-    samm.monitorApp(pid)
+@app.route("/monitor/<int:pid>", methods=["POST"])
+def monitor(pid):
+    mon = Process(pid)
+    mon.start()
     return {'result':1}, 201
