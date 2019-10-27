@@ -8,7 +8,7 @@ def runTop(filepath):
 
 def assign(data):
     data = data.split()
-    print(len(data))   dataJson = {
+    dataJson = {
         'pid':data[0],
         'user':data[1],
         'pr':data[2],

@@ -1,15 +1,16 @@
 import sys
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import db
+#import firebase_admin
+#from firebase_admin import credentials
+#from firebase_admin import db
 import os
 import flask
 from flask import  request, abort, jsonify, send_from_directory
 import json
 from tools import top
-from tools import process
+#from tools import process
 import time
 from flask_cors import CORS
+import sammonitor as samm
 
 
 
@@ -17,10 +18,10 @@ app = flask.Flask(__name__)
 CORS(app)
 
 #Fetch the service account key JSON file contents
-cred = credentials.Certificate('adminsdk.json')
-UPLOAD_DIRECTORY = "files"
+#cred = credentials.Certificate('adminsdk.json')
+#UPLOAD_DIRECTORY = "files"
 
-firebase_admin.initialize_app(options={
+"""firebase_admin.initialize_app(options={
     'databaseURL': 'https://self-awareness-70035.firebaseio.com/'
 })
 
@@ -84,7 +85,7 @@ def runApp(filename):
     app.start()
     time.sleep(0.2)
     app.analizeCpu()
-    return {'pid':app.appId,'ppid':os.getpid()}, 201
+    return {'pid':app.appId,'ppid':os.getpid()}, 201"""
 
 @app.route("/top", methods=["GET"])
 def getTop():
@@ -94,3 +95,9 @@ def getTop():
     result = top.fileRefactor(toppath)
     top.deleteFile(toppath)
     return {'result':result}, 201
+
+
+@app.route("/monitor/<pid>", methods=["POST"])
+def getTop(pid):
+    samm.monitorApp(pid)
+    return {'result':1}, 201
