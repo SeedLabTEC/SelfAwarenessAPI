@@ -2,8 +2,6 @@ import sammonitor as samm
 import os
 import time
 
-
-
 def execute(pid):
     if os.fork() != 0:
         return
