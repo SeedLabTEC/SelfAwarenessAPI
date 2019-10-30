@@ -16,6 +16,8 @@ from includes import monitor
 app = flask.Flask(__name__)
 CORS(app)
 
+global monitors 
+monitors =  []
 #Fetch the service account key JSON file contents
 #cred = credentials.Certificate('adminsdk.json')
 #UPLOAD_DIRECTORY = "files"
@@ -96,8 +98,10 @@ def getTop():
 
 @app.route("/monitorApp/<int:pid>", methods=["POST"])
 def monitorApp(pid):
-    monitor.startProcess(pid)
-    return {'result':1}, 201
+    global monitors
+    pid=  monitor.startProcess(pid)
+    print(pid)
+    return {'result':pid}, 201
 
 @app.route("/getPidData/<int:pid>", methods=["GET"])
 def getPidData(pid):
@@ -108,3 +112,20 @@ def getPidData(pid):
 def getPidHistory(pid):
     result = monitor.getPidHistoryInfo(pid)
     return result, 201
+
+@app.route("/endMonitors", methods=["POST"])
+def endMonitors():
+    monitor.endAllMonitors()
+    return {'result':True}, 201
+
+
+@app.route("/endProcess/<int:pid>", methods=["POST"])
+def endProcess(pid):
+    monitor.endProcess(pid)
+    return {'result':True}, 201
+
+
+@app.route("/killMonitor/<int:pid>", methods=["POST"])
+def killMonitor(pid):
+    res = monitor.killMonitor(pid)
+    return {'result':res}, 201
