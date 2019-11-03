@@ -3,6 +3,7 @@ import os
 import time
 import signal
 from multiprocessing import Process
+from subprocess import call
 
 global myPid
 myPid = 0
@@ -23,7 +24,25 @@ def monitorProcess(pid):
     saveMonitorData(os.getpid(),pid)
     samm.monitorApp(pid)
 
+
 def startProcess(pid):
+    p = Process(target=monitorProcess,args=(pid,))
+    p.start()
+    print('exiting main')
+    return os.getpid()
+
+def analisysProcess(pid):
+    global myPid
+    if os.fork() != 0:
+        return
+    myPid = os.getpid()
+    print("pid", myPid)
+    print("ppid", os.getppid())
+    saveAnalisysData(os.getpid(),pid)
+    rc = call("./includes/SAMMonitor")
+    print(rc)
+
+def initAnalisys(pid):
     p = Process(target=monitorProcess,args=(pid,))
     p.start()
     print('exiting main')
@@ -100,11 +119,16 @@ def endAllMonitors():
         print("Killing ",monitor[1])
         os.kill(int(monitor[1]), signal.SIGKILL)
         os.remove(logpath+"monitorHistory.txt")
-        
+
 def endProcess(pid):
      os.kill(pid, signal.SIGKILL)
 
 def saveMonitorData(pidMonitor,pidTask):
+    f = open(logpath+"monitorHistory.txt", "a")
+    f.write(str(pidTask)+":"+str(pidMonitor)+"\n")
+    f.close()
+
+def saveAnalisysData(pidMonitor,pidTask):
     f = open(logpath+"monitorHistory.txt", "a")
     f.write(str(pidTask)+":"+str(pidMonitor)+"\n")
     f.close()

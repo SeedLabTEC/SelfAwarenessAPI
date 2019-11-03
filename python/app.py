@@ -11,6 +11,7 @@ from tools import top
 import time
 from flask_cors import CORS
 from includes import monitor
+from includes import thinker
 
 
 app = flask.Flask(__name__)
@@ -98,7 +99,6 @@ def getTop():
 
 @app.route("/monitorApp/<int:pid>", methods=["POST"])
 def monitorApp(pid):
-    global monitors
     pid=  monitor.startProcess(pid)
     print(pid)
     return {'result':pid}, 201
@@ -129,3 +129,24 @@ def endProcess(pid):
 def killMonitor(pid):
     res = monitor.killMonitor(pid)
     return {'result':res}, 201
+
+@app.route("/configureAnalisys", methods=["POST"])
+def defineParameters():
+    config = request.json
+    res = thinker.defineParameters(config)
+    return {'result':res}, 201
+
+@app.route("/startAnalisys/<int:pid>", methods=["POST"])
+def startAnalisys(pid):
+    pid= thinker.startProcess(pid)
+    print(pid)
+    return {'result':pid}, 201
+
+@app.route("/startAll/<int:pid>", methods=["POST"])
+def startAll(pid):
+    pidM = monitor.startProcess(pid)
+    pidA= thinker.startProcess(pid)
+    return {'monitor':pidM,"analisys":pidA}, 201
+
+
+
