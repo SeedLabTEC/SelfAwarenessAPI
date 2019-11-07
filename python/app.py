@@ -134,6 +134,16 @@ def killMonitor(pid):
     res = monitor.killMonitor(pid)
     return {'result':res}, 201
 
+@app.route("/killAnalisys/<int:pid>", methods=["POST"])
+def killAnalisys(pid):
+    res = thinker.killAnalisys(pid)
+    return {'result':res}, 201
+
+@app.route("/endAnalisys", methods=["POST"])
+def endAnalisys():
+    thinker.endAllAnalisyss()
+    return {'result':True}, 201
+
 @app.route("/configureAnalisys/<int:pid>", methods=["POST"])
 def defineParameters(pid):
     config = request.json

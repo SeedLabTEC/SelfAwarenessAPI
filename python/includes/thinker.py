@@ -25,10 +25,9 @@ def analisysProcess(pid):
     global pathToAnalisys
     if os.fork() != 0:
         return
-    myPid = os.getpid()
-    print("pid", myPid)
+    print("pid", os.getpid())
     print("ppid", os.getppid())
-    saveAnalisysData(os.getpid(),pid)
+    saveAnalisysData(os.getpid()+2,pid)
     os.system(pathToAnalisys+str(pid))
 
 
@@ -82,3 +81,42 @@ def saveAnalisysData(pidAnalisys,pidTask):
     f = open(logpath+"analisysHistory.txt", "a")
     f.write(str(pidTask)+":"+str(pidAnalisys)+"\n")
     f.close()
+
+
+
+def readAnalisys():
+    file = open(logpath+"analisysHistory.txt","r")
+    results = []
+    for line in file:
+        data = line
+        data = data.replace('\n','')
+        fields = data.split(":")
+        results.append(fields)   
+    file.close()
+    return results
+
+def endProcess(pid):
+     os.kill(pid, signal.SIGKILL)
+
+def killAnalisys(pid):
+    file = open(logpath+"analisysHistory.txt","r")
+    for line in file:
+        data = line
+        data = data.replace('\n','')
+        fields = data.split(":")
+        if(int(fields[0])==pid):
+            endProcess(int(fields[1]))
+            return True  
+    file.close()
+    return False
+
+
+def endAllAnalisyss():
+    Analisys = readAnalisys()
+    for Analisys in Analisys:    
+        try:
+            print("Killing ",Analisys[1])
+            os.kill(int(Analisys[1]), signal.SIGKILL)
+        except:
+            print("No such process "+Analisys[1])
+    os.remove(logpath+"analisysHistory.txt")

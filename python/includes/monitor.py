@@ -31,23 +31,6 @@ def startProcess(pid):
     print('exiting main')
     return os.getpid()
 
-def analisysProcess(pid):
-    global myPid
-    if os.fork() != 0:
-        return
-    myPid = os.getpid()
-    print("pid", myPid)
-    print("ppid", os.getppid())
-    saveAnalisysData(os.getpid(),pid)
-    rc = call("./includes/SAMMonitor")
-    print(rc)
-
-def initAnalisys(pid):
-    p = Process(target=monitorProcess,args=(pid,))
-    p.start()
-    print('exiting main')
-    return os.getpid()
-
 
 def jsonFormat(array):
     jsonResult = {
@@ -123,6 +106,7 @@ def endAllMonitors():
             os.remove(logpath+"monitorHistory.txt")
         except:
             print("No such process "+monitor[1])
+    os.remove(logpath+"monitorHistory.txt")
 
 def endAllProcess():
     monitors = readMonitors()
@@ -130,9 +114,9 @@ def endAllProcess():
         try:
             print("Killing ",monitor[0])
             os.kill(int(monitor[0]), signal.SIGKILL)
-            os.remove(logpath+"monitorHistory.txt")
         except:
             print("No such process "+monitor[1])
+    os.remove(logpath+"monitorHistory.txt")
 
 def endProcess(pid):
      os.kill(pid, signal.SIGKILL)
