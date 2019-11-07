@@ -55,9 +55,10 @@ def jsonFormat(array):
         "memBytes":array[1],
         "memPercen":array[2],
         "cpuPercen":array[3],
-        "powerPercen":array[4],
-        "timestamp":array[5],
-        "flag":array[6].replace('\n', '')
+        "powerPercen":array[5],
+        "processor":array[4],
+        "timestamp":array[6],
+        "flag":array[7].replace('\n', '')
     }
     return jsonResult
 
@@ -115,10 +116,23 @@ def killMonitor(pid):
 
 def endAllMonitors():
     monitors = readMonitors()
-    for monitor in monitors:
-        print("Killing ",monitor[1])
-        os.kill(int(monitor[1]), signal.SIGKILL)
-        os.remove(logpath+"monitorHistory.txt")
+    for monitor in monitors:    
+        try:
+            print("Killing ",monitor[1])
+            os.kill(int(monitor[1]), signal.SIGKILL)
+            os.remove(logpath+"monitorHistory.txt")
+        except:
+            print("No such process "+monitor[1])
+
+def endAllProcess():
+    monitors = readMonitors()
+    for monitor in monitors:    
+        try:
+            print("Killing ",monitor[0])
+            os.kill(int(monitor[0]), signal.SIGKILL)
+            os.remove(logpath+"monitorHistory.txt")
+        except:
+            print("No such process "+monitor[1])
 
 def endProcess(pid):
      os.kill(pid, signal.SIGKILL)
@@ -128,8 +142,4 @@ def saveMonitorData(pidMonitor,pidTask):
     f.write(str(pidTask)+":"+str(pidMonitor)+"\n")
     f.close()
 
-def saveAnalisysData(pidMonitor,pidTask):
-    f = open(logpath+"monitorHistory.txt", "a")
-    f.write(str(pidTask)+":"+str(pidMonitor)+"\n")
-    f.close()
 

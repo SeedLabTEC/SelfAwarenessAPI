@@ -118,6 +118,10 @@ def endMonitors():
     monitor.endAllMonitors()
     return {'result':True}, 201
 
+@app.route("/endAllProcess", methods=["POST"])
+def endAllProcess():
+    monitor.endAllProcess()
+    return {'result':True}, 201
 
 @app.route("/endProcess/<int:pid>", methods=["POST"])
 def endProcess(pid):
@@ -130,10 +134,13 @@ def killMonitor(pid):
     res = monitor.killMonitor(pid)
     return {'result':res}, 201
 
-@app.route("/configureAnalisys", methods=["POST"])
-def defineParameters():
+@app.route("/configureAnalisys/<int:pid>", methods=["POST"])
+def defineParameters(pid):
     config = request.json
+    print(config)
     res = thinker.defineParameters(config)
+    pid= thinker.startProcess(pid)
+    print(pid)
     return {'result':res}, 201
 
 @app.route("/startAnalisys/<int:pid>", methods=["POST"])

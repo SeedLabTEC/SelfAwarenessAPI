@@ -18,6 +18,7 @@ checkMemBytes(){
    memoryBytes=$(ps -p $1 -o rss)
    memoryBytes=$(echo $memoryBytes | sed -e s/^$prefixBytes//)
 }
+
 #Function that concatenate all the information
 checkMem(){
     checkMemPer $1
